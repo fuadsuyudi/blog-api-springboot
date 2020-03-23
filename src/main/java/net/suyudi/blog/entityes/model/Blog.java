@@ -17,6 +17,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -49,10 +50,12 @@ public class Blog implements Serializable {
 
     @Column(length = 150, nullable = false)
     @Size(min = 3, max = 150)
+    @NotBlank
     private String title;
 
     @Column(length = 1000, nullable = false, columnDefinition = "TEXT")
     @Size(min = 10, max = 1000)
+    @NotBlank
     private String content;
 
     @Lob

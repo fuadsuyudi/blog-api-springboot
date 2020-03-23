@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -37,6 +38,7 @@ public class Categories implements Serializable {
 
     @Column(length = 45, nullable = false)
     @Size(min = 3, max = 45)
+    @NotBlank
     private String name;
 
     @Column(updatable = false)

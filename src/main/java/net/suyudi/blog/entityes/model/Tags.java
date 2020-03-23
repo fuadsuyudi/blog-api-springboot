@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -44,6 +45,7 @@ public class Tags implements Serializable {
 
     @Column(length = 20, nullable = false, unique = true)
     @Size(min = 2, max = 20)
+    @NotBlank
     private String name;
 
     @Column(updatable = false)

@@ -47,9 +47,11 @@ public class Author implements Serializable {
 
     @Column(length = 45, nullable = false, unique = true)
     @Size(min = 3, max = 45)
+    @NotBlank
     private String username;
 
     @Column(length = 150, nullable = false)
+    @NotBlank
     private String password;
 
     @Column(updatable = false)
