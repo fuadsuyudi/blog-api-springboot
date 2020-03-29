@@ -1,12 +1,8 @@
 package net.suyudi.blog.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.annotation.MultipartConfig;
-
-import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,17 +13,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javassist.NotFoundException;
 import net.suyudi.blog.entityes.ResponseBase;
+import net.suyudi.blog.entityes.model.Author;
 import net.suyudi.blog.entityes.model.Blog;
+import net.suyudi.blog.entityes.model.Categories;
 import net.suyudi.blog.entityes.model.Tags;
+import net.suyudi.blog.entityes.request.BlogDto;
+import net.suyudi.blog.repository.AuthorRepository;
 import net.suyudi.blog.repository.BlogRepository;
+import net.suyudi.blog.repository.CategoriesRepository;
+import net.suyudi.blog.repository.TagsRepository;
 import net.suyudi.blog.service.BlogService;
 
 /**
@@ -39,6 +37,15 @@ public class BlogController {
 
     @Autowired
     private BlogRepository blogRepository;
+
+    @Autowired
+    private AuthorRepository authorRepository;
+
+    @Autowired
+    private CategoriesRepository categoriesRepository;
+
+    @Autowired
+    private TagsRepository tagsRepository;
 
     @Autowired
     private BlogService blogService;
@@ -64,22 +71,26 @@ public class BlogController {
     }
 
     @PostMapping()
-    public ResponseEntity<ResponseBase> postBlog(@RequestParam MultipartFile request, @RequestBody Blog blog) {
+    public ResponseEntity<ResponseBase> postBlog(@RequestBody Blog blog) throws NotFoundException {
         ResponseBase response = new ResponseBase<>();
 
-        // blog.getTag().add(new Tags("rest"));
-        // blog.getTag().add(new Tags("api"));
+        Author author = authorRepository.findById(blog.getAuthor_id()).orElseThrow(() -> new NotFoundException("Blog id " + blog.getAuthor_id() + " NotFound"));
+        Categories categories = categoriesRepository.findById(blog.getCategories_id()).orElseThrow(() -> new NotFoundException("Category id " + blog.getCategories_id() + " NotFound"));
+        
+        List<Integer> tagtag = blog.getTags_id();
+        ArrayList<Tags> tags = new ArrayList<Tags>();
 
-        System.out.println("fuad " + request.getOriginalFilename().toString());
+        for (Integer tag : tagtag) {
+            Tags val = tagsRepository.findById(tag).orElseThrow(() -> new NotFoundException("Tags id " + tag + " NotFound"));
+            tags.add(val);
+        }
+
+        blog.setAuthor(author);
+        blog.setCategories(categories);
+        blog.setTag(tags);
 
         try {
-            // response.setData(blogRepository.save(blog));
-
-            File upl = new File("assets/img/" + request.getOriginalFilename());
-            upl.createNewFile();
-            FileOutputStream fout = new FileOutputStream(upl);
-            fout.write(request.getBytes());
-            fout.close();
+            response.setData(blogRepository.save(blog));
         } catch (Exception e) {
             response.setStatus(false);
             response.setCode(500);
@@ -92,12 +103,15 @@ public class BlogController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseBase> putBlog(@PathVariable Integer id, @RequestBody Blog blog) throws NotFoundException {
+    public ResponseEntity<ResponseBase> putBlog(@PathVariable Integer id, @RequestBody BlogDto blogDto) throws NotFoundException {
         ResponseBase response = new ResponseBase<>();
 
-        blogRepository.findById(id).orElseThrow(() -> new NotFoundException("Tags id " + id + " NotFound"));
+        Blog blog = blogRepository.findById(id).orElseThrow(() -> new NotFoundException("Blog id " + id + " NotFound"));
 
         try {
+            blog.setTitle(blogDto.getTitle());
+            blog.setContent(blogDto.getContent());
+
             response.setData(blogService.update(id, blog));
         } catch (Exception e) {
             response.setStatus(false);

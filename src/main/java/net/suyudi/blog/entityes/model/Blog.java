@@ -48,6 +48,8 @@ public class Blog implements Serializable {
 
     private transient Integer categories_id;
 
+    private transient List<Integer> tags_id;
+
     @Column(length = 150, nullable = false)
     @Size(min = 3, max = 150)
     @NotBlank
