@@ -60,8 +60,8 @@ public class Comment implements Serializable {
     @UpdateTimestamp
     private Date updated_at;
 
-    @ManyToOne
-    @JoinColumn(name = "blog_id")
-    private Blog blog;
+    // @ManyToOne
+    // @JoinColumn(name = "blog_id")
+    // private Blog blog;
 }
 
