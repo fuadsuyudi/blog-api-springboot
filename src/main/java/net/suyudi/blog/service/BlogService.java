@@ -1,23 +1,14 @@
 package net.suyudi.blog.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import javassist.NotFoundException;
+import net.suyudi.blog.entityes.ResponsePage;
 import net.suyudi.blog.entityes.model.Blog;
-import net.suyudi.blog.repository.BlogRepository;
+import net.suyudi.blog.entityes.request.BlogDto;
 
-/**
- * BlogService
- */
-@Service
-public class BlogService {
+public interface BlogService {
+    public Blog create(Blog blog);
+    public Blog update(Integer id, BlogDto blogDto) throws NotFoundException;
+    public Boolean delete(Integer id);
 
-    @Autowired
-    private BlogRepository blogRepository;
-
-    public Blog update(Integer id, Blog blog) {
-        blog.setId(id);
-
-        return blogRepository.save(blog);
-    }
+    public ResponsePage findAll(Integer page, Integer perpage);
 }
