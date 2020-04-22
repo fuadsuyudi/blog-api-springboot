@@ -47,11 +47,19 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public ResponsePage findAll(Integer page, Integer perpage) {
+    public ResponsePage findAll(String title, Integer page, Integer perpage) {
         page = page - 1;
 
         Pageable paging = PageRequest.of(page, perpage, Sort.by("id").descending());
-        Page<Blog> blog = blogRepository.findAll(paging);
+
+        System.out.println("fuad " + title.isEmpty());
+
+        Page<Blog> blog;
+        if (!title.isEmpty()) {
+            blog = blogRepository.findByTitleContaining(title, paging);
+        } else {
+            blog = blogRepository.findAll(paging);
+        }
         
         return new ResponsePage(blog);
     }

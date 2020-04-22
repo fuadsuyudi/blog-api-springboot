@@ -56,10 +56,10 @@ public class BlogController {
     private BlogService blogService;
 
     @GetMapping()
-    public ResponseEntity<ResponseBase> getBlog(@RequestParam("page") Integer page, @RequestParam("perpage") Integer perpage) {
+    public ResponseEntity<ResponseBase> getBlog(@RequestParam("page") Integer page, @RequestParam("perpage") Integer perpage, @RequestParam("title") String title) {
         ResponseBase response = new ResponseBase<>();
 
-        response.setData(blogService.findAll(page, perpage));
+        response.setData(blogService.findAll(title, page, perpage));
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

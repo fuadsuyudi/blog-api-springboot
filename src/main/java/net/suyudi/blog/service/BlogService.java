@@ -10,5 +10,5 @@ public interface BlogService {
     public Blog update(Integer id, BlogDto blogDto) throws NotFoundException;
     public Boolean delete(Integer id);
 
-    public ResponsePage findAll(Integer page, Integer perpage);
+    public ResponsePage findAll(String title, Integer page, Integer perpage);
 }
